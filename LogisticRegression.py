@@ -56,23 +56,33 @@ x_test_ip = np.hstack((x_test_ip, new_col))
 
 
 
-Train_data_numbers = [20, 50, 100, 500]
-error_avg = np.zeros(len(Train_data_numbers))
+Train_data_numbers = [20, 50, 75, 100,250, 500]
+error =  np.zeros(len(Train_data_numbers))
+error_ = []
+iterations = 1000
+for iters in range(1,iterations):
 
-for iters in range(1,1000):
-
-    error = []
     for Train_data_numbers_ in Train_data_numbers:
 
         x_train_rand,y_train_rand = RandomizedTrainingDataGenerator(x_train_ip,y_train,Train_data_numbers_)
         reg = GeneratePredictor(x_train_rand,y_train_rand)
         y_predict = PredictOutput(reg,x_test_ip)
-        error.append(OutputError(y_predict,y_test))
+        error_.append(OutputError(y_predict,y_test))
 
-    #error_avg = (((iters-1)/iters)*error_avg) + (((1)/iters)*error)
-    #error_avg = [(((iters-1)/iters)*x) + ((1/iters)*error) for x in error_avg]
+    #print(error_)
+    #error = error_
+    error = np.vstack((error,error_))
 
-plot1,= plt.plot(Train_data_numbers,error,'b.',label='Vehicle Dynamics Time Instant')
+
+
+    error_ = []
+
+error = np.array(error)
+#print(error[100-2])
+error = np.sum(error, axis=0)
+error = error/iterations
+
+plot1,= plt.plot(Train_data_numbers,error,'b.',label='Logistic regression error')
 plt.grid()
 plt.xlabel('Samples')
 plt.ylabel('Training error')
